@@ -1,20 +1,25 @@
 package models
 
 import (
-	"github.com/satori/go.uuid"
-	"gorm.io/gorm"
+	"log"
 	"time"
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type BaseModel struct {
 	ID        uuid.UUID  `gorm:"type:uuid;primary_key;"`
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt time.Time  `json:"updatedAt"`
-	DeletedAt *time.Time `jsan:"deletedAt" sql:"index"`
+	DeletedAt *time.Time `json:"deletedAt" sql:"index"`
 }
 
 func (base *BaseModel) BeforeCreate(db *gorm.DB) error {
-	uuid := uuid.NewV4()
+	uuid, err := uuid.NewV7()
+	if err != nil {
+		log.Fatalf("Error generating random UUID")
+	}
+
 	base.ID = uuid
 	return nil
 }
