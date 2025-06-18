@@ -13,7 +13,7 @@ type RSVP struct {
 	PlusOneCount        int       `gorm:"default:0" json:"plusOneCount"`
 	ResponseDate        time.Time `gorm:"autoUpdateTime" json:"responseDate"`
 	GuestID             uuid.UUID `gorm:"not null;unique;index" json:"guestId"`
-	Guest               Guest     `gorm:"foreignKey:GuestID" json:"guest"`
+	Guest               Guest     `gorm:"foreignKey:GuestID" json:"-"`
 }
 
 type RSVPInput struct {

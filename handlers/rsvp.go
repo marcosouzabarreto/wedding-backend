@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"wedding-backend/models"
 	"wedding-backend/services"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,4 +20,12 @@ func (h *RSVPHandler) Create(c *gin.Context) {
 	if err := c.ShouldBindJSON(&rsvp); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request: " + err.Error()})
 	}
+
+	createdRSVP, err := h.service.Create(&rsvp)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, createdRSVP)
 }
