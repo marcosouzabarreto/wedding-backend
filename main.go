@@ -21,10 +21,13 @@ func main() {
 	router.Use(cors.Default())
 	routes.SetupGuestRoutes(router, db)
 	routes.SetupFamilyRoutes(router, db)
+	routes.SetupRSVPRoutes(router, db)
 
-	fmt.Println("123")
-	if err := router.Run(); err != nil {
+	port := "8080"
+	address := fmt.Sprintf("localhost:%s", port)
+	if err := router.Run(address); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
-
+	} else {
+		fmt.Println("Server started at address: ")
 	}
 }

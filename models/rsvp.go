@@ -2,8 +2,7 @@ package models
 
 import (
 	"time"
-
-	uuid "github.com/satori/go.uuid"
+	"github.com/satori/go.uuid"
 )
 
 type RSVP struct {
