@@ -3,21 +3,23 @@ package services
 import (
 	"crypto/rand"
 	"strings"
-	"wedding-backend/db"
 	"wedding-backend/models"
-
 	"gorm.io/gorm"
 )
 
-type FamilyService struct{}
+type FamilyService struct {
+	db *gorm.DB
+}
 
-func NewFamilyService() *FamilyService {
-	return &FamilyService{}
+func NewFamilyService(db *gorm.DB) *FamilyService {
+	return &FamilyService{
+		db: db,
+	}
 }
 
 func (s *FamilyService) GetAll() ([]models.Family, error) {
 	var families []models.Family
-	if err := db.DB.Find(&families).Error; err != nil {
+	if err := s.db.Find(&families).Error; err != nil {
 		return nil, err
 	}
 	return families, nil
@@ -34,7 +36,7 @@ func (s *FamilyService) Create(name string) (models.Family, error) {
 		Token: token,
 	}
 
-	if err := db.DB.Create(&family).Error; err != nil {
+	if err := s.db.Create(&family).Error; err != nil {
 		return models.Family{}, err
 	}
 	return family, nil
@@ -42,7 +44,7 @@ func (s *FamilyService) Create(name string) (models.Family, error) {
 
 func (s *FamilyService) GetByID(id string) (models.Family, error) {
 	var family models.Family
-	if err := db.DB.First(&family, id).Error; err != nil {
+	if err := s.db.First(&family, id).Error; err != nil {
 		return models.Family{}, err
 	}
 	return family, nil
@@ -65,7 +67,7 @@ func (s *FamilyService) generateUniqueToken(familyName string) (string, error) {
 	token := prefix + string(bytes)
 
 	var existing models.Family
-	if err := db.DB.Where("token = ?", token).First(&existing).Error; err == nil {
+	if err := s.db.Where("token = ?", token).First(&existing).Error; err == nil {
 		return s.generateUniqueToken(familyName)
 	} else if err != gorm.ErrRecordNotFound {
 		return "", err

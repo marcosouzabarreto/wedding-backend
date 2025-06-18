@@ -1,18 +1,20 @@
 package services
 
 import (
-	"wedding-backend/db"
 	"wedding-backend/models"
+	"gorm.io/gorm"
 )
 
-type RSVPService struct{}
+type RSVPService struct{
+	db *gorm.DB
+}
 
 func NewRSVPService() *RSVPService {
 	return &RSVPService{}
 }
 
 func (s *RSVPService) Create(rsvp *models.RSVP) (*models.RSVP, error) {
-	if err := db.DB.Create(&rsvp).Error; err != nil {
+	if err := s.db.Create(&rsvp).Error; err != nil {
 		return nil, err
 	}
 

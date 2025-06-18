@@ -12,13 +12,15 @@ import (
 
 func main() {
 	router := gin.Default()
-	if err := db.InitDB(); err != nil {
-		log.Fatalf("Failed to init database: %v", err)
+	db, err := db.InitDB()
+
+	if err != nil {
+		log.Fatalf("Failed to init DB")
 	}
 
 	router.Use(cors.Default())
-	routes.SetupGuestRoutes(router)
-	routes.SetupFamilyRoutes(router)
+	routes.SetupGuestRoutes(router, db)
+	routes.SetupFamilyRoutes(router, db)
 
 	fmt.Println("123")
 	if err := router.Run(); err != nil {

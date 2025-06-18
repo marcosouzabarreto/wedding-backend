@@ -6,20 +6,19 @@ import (
 	"wedding-backend/models"
 )
 
-var DB *gorm.DB
-
-func InitDB() error {
+func InitDB() (*gorm.DB, error) {
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
-
 	if err != nil {
-    return err
+		return nil, err
 	}
 
-	if err = db.AutoMigrate(&models.Guest{}, &models.Family{}, &models.RSVP{}); err != nil {
-    return err
-  }
+	if err = db.AutoMigrate(
+		&models.Family{},
+		&models.Guest{},
+		&models.RSVP{},
+	); err != nil {
+		return nil, err
+	}
 
-	DB = db
-
-	return nil
+	return db, nil
 }

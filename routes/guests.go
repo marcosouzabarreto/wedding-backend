@@ -5,11 +5,12 @@ import (
 	"wedding-backend/services"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-func SetupGuestRoutes(r *gin.Engine) {
+func SetupGuestRoutes(r *gin.Engine, db *gorm.DB) {
 	guest := r.Group("/guests")
-	guestService := services.NewGuestService()
+	guestService := services.NewGuestService(db)
 	guestRoutes := handlers.NewGuestHandlers(guestService)
 	{
 		guest.GET("/", guestRoutes.GetAll)

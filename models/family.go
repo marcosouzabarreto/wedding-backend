@@ -1,9 +1,10 @@
 package models
 
 type Family struct {
-	ID    string `gorm:"primaryKey;autoIncrement" json:"id"`
-	Name  string `gorm:"unique" json:"name"`
-	Token string `gorm:"unique" json:"token"`
+    BaseModel
+    Name    string  `gorm:"unique;not null" json:"name" validate:"required"`
+    Token   string  `gorm:"unique;not null" json:"token"`
+    Guests  []Guest `gorm:"foreignKey:FamilyID" json:"guests,omitempty"`
 }
 
 type FamilyInput struct {
