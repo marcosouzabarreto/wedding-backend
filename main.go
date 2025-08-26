@@ -22,6 +22,7 @@ func main() {
 	routes.SetupGuestRoutes(router, db)
 	routes.SetupFamilyRoutes(router, db)
 	routes.SetupRSVPRoutes(router, db)
+	routes.SetupGiftRoutes(router, db)
 
 	port := "8080"
 	address := fmt.Sprintf("localhost:%s", port)

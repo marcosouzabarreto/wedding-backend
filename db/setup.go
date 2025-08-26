@@ -16,6 +16,7 @@ func InitDB() (*gorm.DB, error) {
 		&models.Family{},
 		&models.Guest{},
 		&models.RSVP{},
+		&models.Gift{},
 	); err != nil {
 		return nil, err
 	}
