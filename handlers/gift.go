@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"wedding-backend/models"
 	"wedding-backend/services"
@@ -22,6 +23,7 @@ func (h *GiftHandlers) GetAll(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	log.Printf("Gifts: %+v\n", gifts)
 	c.JSON(http.StatusOK, gifts)
 }
 

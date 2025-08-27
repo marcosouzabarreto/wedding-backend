@@ -1,8 +1,8 @@
 package services
 
 import (
-	"gorm.io/gorm"
 	"wedding-backend/models"
+	"gorm.io/gorm"
 )
 
 type GiftService struct {
@@ -45,8 +45,6 @@ func (s *GiftService) Update(id string, updatedGift models.Gift) (models.Gift, e
 	// Update the fields
 	gift.Name = updatedGift.Name
 	gift.Description = updatedGift.Description
-	gift.GifterName = updatedGift.GifterName
-	gift.Message = updatedGift.Message
 
 	if err := s.db.Save(&gift).Error; err != nil {
 		return models.Gift{}, err

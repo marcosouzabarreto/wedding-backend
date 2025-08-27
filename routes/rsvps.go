@@ -15,6 +15,7 @@ func SetupRSVPRoutes(r *gin.Engine, db *gorm.DB) {
 
 	{
 		rsvp.POST("/", rsvpHandler.Create)
+		rsvp.POST("/family", rsvpHandler.CreateFamilyRSVP)
 	}
 
 }

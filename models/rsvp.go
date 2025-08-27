@@ -23,3 +23,21 @@ type RSVPInput struct {
 	PlusOneCount        int    `json:"plusOneCount,omitempty"`
 	GuestID             string `json:"guestId" validate:"required"`
 }
+
+type FamilyRSVPMemberInput struct {
+	GuestID             string `json:"guestId" validate:"required"`
+	WillAttend          bool   `json:"willAttend"`
+	DietaryRestrictions string `json:"dietaryRestrictions,omitempty"`
+}
+
+type FamilyRSVPContactInfo struct {
+	Email string `json:"email"`
+	Phone string `json:"phone"`
+}
+
+type FamilyRSVPRequest struct {
+	FamilyToken     string                `json:"familyToken" validate:"required"`
+	ContactInfo     FamilyRSVPContactInfo `json:"contactInfo"`
+	SpecialRequests string                `json:"specialRequests,omitempty"`
+	Members         []FamilyRSVPMemberInput `json:"members" validate:"required,min=1"`
+}
