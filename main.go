@@ -18,11 +18,19 @@ func main() {
 		log.Fatalf("Failed to init DB")
 	}
 
-	router.Use(cors.Default())
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 	routes.SetupGuestRoutes(router, db)
 	routes.SetupFamilyRoutes(router, db)
 	routes.SetupRSVPRoutes(router, db)
 	routes.SetupGiftRoutes(router, db)
+	routes.SetupUserGiftRoutes(router, db)
+	routes.PaymentRoutes(router, db)
 
 	port := "8080"
 	address := fmt.Sprintf("localhost:%s", port)
