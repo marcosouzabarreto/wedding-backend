@@ -49,3 +49,13 @@ func (h *FamilyHandlers) GetById(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, family)
 }
+
+func (h *FamilyHandlers) GetByToken(c *gin.Context) {
+	token := c.Param("token")
+	family, err := h.service.GetByToken(token)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "family not found"})
+		return
+	}
+	c.JSON(http.StatusOK, family)
+}

@@ -42,7 +42,6 @@ func (s *GiftService) Update(id string, updatedGift models.Gift) (models.Gift, e
 		return models.Gift{}, err
 	}
 
-	// Update the fields
 	gift.Name = updatedGift.Name
 	gift.Description = updatedGift.Description
 

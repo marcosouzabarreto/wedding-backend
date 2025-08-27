@@ -19,7 +19,7 @@ func NewFamilyService(db *gorm.DB) *FamilyService {
 
 func (s *FamilyService) GetAll() ([]models.Family, error) {
 	var families []models.Family
-	if err := s.db.Find(&families).Error; err != nil {
+	if err := s.db.Preload("Guests.RSVP").Find(&families).Error; err != nil {
 		return nil, err
 	}
 	return families, nil
@@ -42,9 +42,17 @@ func (s *FamilyService) Create(name string) (models.Family, error) {
 	return family, nil
 }
 
+func (s *FamilyService) GetByToken(token string) (models.Family, error) {
+	var family models.Family
+	if err := s.db.Preload("Guests.RSVP").Where("token = ?", token).First(&family).Error; err != nil {
+		return models.Family{}, err
+	}
+	return family, nil
+}
+
 func (s *FamilyService) GetByID(id string) (models.Family, error) {
 	var family models.Family
-	if err := s.db.First(&family, id).Error; err != nil {
+	if err := s.db.Preload("Guests.RSVP").First(&family, id).Error; err != nil {
 		return models.Family{}, err
 	}
 	return family, nil

@@ -17,6 +17,7 @@ func SetupFamilyRoutes(r *gin.Engine, db *gorm.DB) {
 		family.GET("/", familyHandlers.GetAll)
 		family.POST("/", familyHandlers.Create)
 		family.GET("/:id", familyHandlers.GetById)
+		family.GET("/token/:token", familyHandlers.GetByToken)
 	}
 
 }

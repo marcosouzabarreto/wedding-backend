@@ -19,7 +19,7 @@ func (h *RSVPHandler) Create(c *gin.Context) {
 	var rsvp models.RSVP
 	if err := c.ShouldBindJSON(&rsvp); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request: " + err.Error()})
-		return // Added return here
+		return
 	}
 
 	createdRSVP, err := h.service.Create(&rsvp)
