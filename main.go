@@ -34,7 +34,6 @@ func main() {
 	}))
 
 	routes.AuthRoutes(router, database)
-	routes.UserRoutes(router, database)
 	routes.SetupGuestRoutes(router, database)
 	routes.SetupFamilyRoutes(router, database)
 	routes.SetupRSVPRoutes(router, database)
