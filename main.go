@@ -33,7 +33,8 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	routes.AuthRoutes(router)
+	routes.AuthRoutes(router, database)
+	routes.UserRoutes(router, database)
 	routes.SetupGuestRoutes(router, database)
 	routes.SetupFamilyRoutes(router, database)
 	routes.SetupRSVPRoutes(router, database)

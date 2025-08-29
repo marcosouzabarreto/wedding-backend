@@ -7,6 +7,6 @@ import (
 	"gorm.io/gorm"
 )
 
-func AuthRoutes(router *gin.Engine, db *gorm.DB) {
-	router.POST("/login", handlers.Login(db))
+func UserRoutes(r *gin.Engine, db *gorm.DB) {
+	r.POST("/users", handlers.CreateUser(db))
 }
