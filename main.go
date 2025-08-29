@@ -3,11 +3,13 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 	"wedding-backend/db"
 	"wedding-backend/routes"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -16,6 +18,11 @@ func main() {
 
 	if err != nil {
 		log.Fatalf("Failed to init DB")
+	}
+
+	err = godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
 	}
 
 	router.Use(cors.New(cors.Config{
@@ -31,7 +38,8 @@ func main() {
 	routes.SetupGiftRoutes(router, db)
 	routes.PaymentRoutes(router, db)
 
-	port := "8080"
+	port := os.Getenv("PORT")
+
 	address := fmt.Sprintf("localhost:%s", port)
 	if err := router.Run(address); err != nil {
 		log.Fatalf("Failed to start server: %v", err)

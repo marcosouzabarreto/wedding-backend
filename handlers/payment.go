@@ -11,7 +11,6 @@ import (
 	"wedding-backend/services"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"github.com/mercadopago/sdk-go/pkg/config"
 	"github.com/mercadopago/sdk-go/pkg/preference"
 	"gorm.io/gorm"
@@ -73,11 +72,6 @@ func CreatePayment(db *gorm.DB) gin.HandlerFunc {
 			} else {
 				title = "Custom gift for the couple"
 			}
-		}
-
-		err := godotenv.Load()
-		if err != nil {
-			log.Fatal("Error loading .env file")
 		}
 
 		cfg, err := config.New(os.Getenv("MERCADOPAGO_ACCESS_TOKEN"))
