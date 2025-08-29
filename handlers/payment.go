@@ -3,19 +3,22 @@ package handlers
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
 	"wedding-backend/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/mercadopago/sdk-go/pkg/config"
 	"github.com/mercadopago/sdk-go/pkg/preference"
 	"gorm.io/gorm"
 )
 
 type CreatePaymentRequest struct {
-	GiftIDs []uint `json:"gift_ids"`
+	GiftIDs      []uint  `json:"gift_ids"`
+	CustomAmount float64 `json:"custom_amount"`
 }
 
 func CreatePayment(db *gorm.DB) gin.HandlerFunc {
@@ -26,10 +29,14 @@ func CreatePayment(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
+		log.Printf("Req: %v", req)
+
 		var gifts []models.Gift
-		if err := db.Where(req.GiftIDs).Find(&gifts).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch gifts"})
-			return
+		if len(req.GiftIDs) > 0 {
+			if err := db.Where(req.GiftIDs).Find(&gifts).Error; err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch gifts"})
+				return
+			}
 		}
 
 		var total float64
@@ -37,6 +44,28 @@ func CreatePayment(db *gorm.DB) gin.HandlerFunc {
 		for _, gift := range gifts {
 			total += gift.Price
 			giftNames = append(giftNames, gift.Name)
+		}
+
+		if req.CustomAmount > 0 {
+			total += req.CustomAmount
+		}
+
+		title := "Gifts for the couple"
+		if len(giftNames) > 0 {
+			title = fmt.Sprintf("Gifts for the couple: %s", strings.Join(giftNames, ", "))
+		}
+
+		if req.CustomAmount > 0 {
+			if len(giftNames) > 0 {
+				title = fmt.Sprintf("%s and a custom amount", title)
+			} else {
+				title = "Custom gift for the couple"
+			}
+		}
+
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error loading .env file")
 		}
 
 		cfg, err := config.New(os.Getenv("MERCADOPAGO_ACCESS_TOKEN"))
@@ -50,13 +79,16 @@ func CreatePayment(db *gorm.DB) gin.HandlerFunc {
 		pref, err := client.Create(context.Background(), preference.Request{
 			Items: []preference.ItemRequest{
 				{
-					Title:       fmt.Sprintf("Gifts for the couple: %s", strings.Join(giftNames, ", ")),
+					Title:       title,
 					Description: "A collection of gifts for the happy couple",
 					Quantity:    1,
 					UnitPrice:   total,
 				},
 			},
 		})
+
+		log.Printf("Err: %v", err)
+
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create preference"})
 			return
