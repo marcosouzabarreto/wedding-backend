@@ -2,6 +2,7 @@ package routes
 
 import (
 	"wedding-backend/handlers"
+	"wedding-backend/middleware"
 	"wedding-backend/services"
 
 	"github.com/gin-gonic/gin"
@@ -9,12 +10,18 @@ import (
 )
 
 func SetupGuestRoutes(r *gin.Engine, db *gorm.DB) {
-	guest := r.Group("/guests")
 	guestService := services.NewGuestService(db)
 	guestRoutes := handlers.NewGuestHandlers(guestService)
+
+	guestPublic := r.Group("/guests")
 	{
-		guest.GET("/", guestRoutes.GetAll)
-		guest.POST("/", guestRoutes.Create)
-		guest.GET("/:id", guestRoutes.GetByID)
+		guestPublic.GET("/", guestRoutes.GetAll)
+		guestPublic.GET("/:id", guestRoutes.GetByID)
+	}
+
+	guestProtected := r.Group("/guests")
+	guestProtected.Use(middleware.AuthMiddleware())
+	{
+		guestProtected.POST("/", guestRoutes.Create)
 	}
 }

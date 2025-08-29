@@ -2,6 +2,7 @@ package routes
 
 import (
 	"wedding-backend/handlers"
+	"wedding-backend/middleware"
 	"wedding-backend/services"
 
 	"github.com/gin-gonic/gin"
@@ -9,15 +10,20 @@ import (
 )
 
 func SetupFamilyRoutes(r *gin.Engine, db *gorm.DB) {
-	family := r.Group("/families")
 	familyService := services.NewFamilyService(db)
 	familyHandlers := handlers.NewFamilyHandlers(familyService)
 
+	familyPublic := r.Group("/families")
 	{
-		family.GET("/", familyHandlers.GetAll)
-		family.POST("/", familyHandlers.Create)
-		family.GET("/:id", familyHandlers.GetById)
-		family.GET("/token/:token", familyHandlers.GetByToken)
+		familyPublic.GET("/", familyHandlers.GetAll)
+		familyPublic.GET("/:id", familyHandlers.GetById)
+		familyPublic.GET("/token/:token", familyHandlers.GetByToken)
+	}
+
+	familyProtected := r.Group("/families")
+	familyProtected.Use(middleware.AuthMiddleware())
+	{
+		familyProtected.POST("/", familyHandlers.Create)
 	}
 
 }
