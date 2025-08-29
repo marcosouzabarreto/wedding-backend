@@ -1,8 +1,9 @@
 package services
 
 import (
-	"gorm.io/gorm"
 	"wedding-backend/models"
+
+	"gorm.io/gorm"
 )
 
 type UserGiftService struct {
@@ -10,20 +11,38 @@ type UserGiftService struct {
 }
 
 func NewUserGiftService(db *gorm.DB) *UserGiftService {
-	return &UserGiftService{db: db}
+	return &UserGiftService{
+		db: db,
+	}
 }
 
-func (s *UserGiftService) GetAll() ([]models.UserGift, error) {
+func (s *UserGiftService) Create(gifterName, message string, giftIDs []uint, customAmount float64) ([]models.UserGift, error) {
 	var userGifts []models.UserGift
-	if err := s.db.Preload("Gift").Find(&userGifts).Error; err != nil {
-		return nil, err
+	for _, giftID := range giftIDs {
+		id := giftID
+		userGift := models.UserGift{
+			GifterName: gifterName,
+			Message:    message,
+			GiftID:     &id,
+		}
+		userGifts = append(userGifts, userGift)
 	}
-	return userGifts, nil
-}
 
-func (s *UserGiftService) Create(userGift models.UserGift) (models.UserGift, error) {
-	if err := s.db.Create(&userGift).Error; err != nil {
-		return models.UserGift{}, err
+	if customAmount > 0 {
+		amount := customAmount
+		userGift := models.UserGift{
+			GifterName:   gifterName,
+			Message:      message,
+			CustomAmount: &amount,
+		}
+		userGifts = append(userGifts, userGift)
 	}
-	return userGift, nil
+
+	if len(userGifts) > 0 {
+		if err := s.db.Create(&userGifts).Error; err != nil {
+			return nil, err
+		}
+	}
+
+	return userGifts, nil
 }

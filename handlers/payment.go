@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 	"wedding-backend/models"
+	"wedding-backend/services"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -19,6 +20,8 @@ import (
 type CreatePaymentRequest struct {
 	GiftIDs      []uint  `json:"gift_ids"`
 	CustomAmount float64 `json:"custom_amount"`
+	GifterName   string  `json:"gifter_name"`
+	Message      string  `json:"message"`
 }
 
 func CreatePayment(db *gorm.DB) gin.HandlerFunc {
@@ -48,6 +51,15 @@ func CreatePayment(db *gorm.DB) gin.HandlerFunc {
 
 		if req.CustomAmount > 0 {
 			total += req.CustomAmount
+		}
+
+		if len(req.GiftIDs) > 0 || req.CustomAmount > 0 {
+			userGiftService := services.NewUserGiftService(db)
+			_, err := userGiftService.Create(req.GifterName, req.Message, req.GiftIDs, req.CustomAmount)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create user gift"})
+				return
+			}
 		}
 
 		title := "Gifts for the couple"
@@ -84,6 +96,11 @@ func CreatePayment(db *gorm.DB) gin.HandlerFunc {
 					Quantity:    1,
 					UnitPrice:   total,
 				},
+			},
+			BackURLs: &preference.BackURLsRequest{
+				Success: "https://laviekinho.com/gift-payment-status",
+				Failure: "https://laviekinho.com/gift-payment-status",
+				Pending: "https://laviekinho.com/gift-payment-status",
 			},
 		})
 
