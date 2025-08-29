@@ -13,18 +13,18 @@ import (
 )
 
 func main() {
+	if os.Getenv("GO_ENV") != "production" {
+		if err := godotenv.Load(); err != nil {
+			log.Println("No .env file found, skipping...")
+		}
+	}
+
+	database, err := db.InitDB()
+	if err != nil {
+		log.Fatalf("Failed to init DB: %v", err)
+	}
+
 	router := gin.Default()
-	db, err := db.InitDB()
-
-	if err != nil {
-		log.Fatalf("Failed to init DB")
-	}
-
-	err = godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
@@ -32,18 +32,22 @@ func main() {
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
-	routes.SetupGuestRoutes(router, db)
-	routes.SetupFamilyRoutes(router, db)
-	routes.SetupRSVPRoutes(router, db)
-	routes.SetupGiftRoutes(router, db)
-	routes.PaymentRoutes(router, db)
+
+	routes.SetupGuestRoutes(router, database)
+	routes.SetupFamilyRoutes(router, database)
+	routes.SetupRSVPRoutes(router, database)
+	routes.SetupGiftRoutes(router, database)
+	routes.PaymentRoutes(router, database)
 
 	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 
-	address := fmt.Sprintf("localhost:%s", port)
+	address := fmt.Sprintf("0.0.0.0:%s", port)
+	log.Printf("Server starting on %s", address)
+
 	if err := router.Run(address); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
-	} else {
-		fmt.Println("Server started at address: ")
 	}
 }
