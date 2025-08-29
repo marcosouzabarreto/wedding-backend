@@ -29,7 +29,6 @@ func main() {
 	routes.SetupFamilyRoutes(router, db)
 	routes.SetupRSVPRoutes(router, db)
 	routes.SetupGiftRoutes(router, db)
-	routes.SetupUserGiftRoutes(router, db)
 	routes.PaymentRoutes(router, db)
 
 	port := "8080"
