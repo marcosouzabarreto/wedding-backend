@@ -11,16 +11,17 @@ import (
 	"wedding-backend/services"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/mercadopago/sdk-go/pkg/config"
 	"github.com/mercadopago/sdk-go/pkg/preference"
 	"gorm.io/gorm"
 )
 
 type CreatePaymentRequest struct {
-	GiftIDs      []uint  `json:"gift_ids"`
-	CustomAmount float64 `json:"custom_amount"`
-	GifterName   string  `json:"gifter_name"`
-	Message      string  `json:"message"`
+	GiftIDs      []uuid.UUID `json:"gift_ids"`
+	CustomAmount float64     `json:"custom_amount"`
+	GifterName   string      `json:"gifter_name"`
+	Message      string      `json:"message"`
 }
 
 func CreatePayment(db *gorm.DB) gin.HandlerFunc {

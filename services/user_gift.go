@@ -3,6 +3,7 @@ package services
 import (
 	"wedding-backend/models"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -16,7 +17,7 @@ func NewUserGiftService(db *gorm.DB) *UserGiftService {
 	}
 }
 
-func (s *UserGiftService) Create(gifterName, message string, giftIDs []uint, customAmount float64) ([]models.UserGift, error) {
+func (s *UserGiftService) Create(gifterName, message string, giftIDs []uuid.UUID, customAmount float64) ([]models.UserGift, error) {
 	var userGifts []models.UserGift
 	for _, giftID := range giftIDs {
 		id := giftID
