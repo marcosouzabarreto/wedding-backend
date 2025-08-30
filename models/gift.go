@@ -1,7 +1,7 @@
 package models
 
 type Gift struct {
-	ID          uint    `json:"id" gorm:"autoincrement"`
+	BaseModel
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Price       float64 `json:"price"`
