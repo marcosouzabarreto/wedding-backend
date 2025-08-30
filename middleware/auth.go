@@ -19,7 +19,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		tokenString = strings.Replace(tokenString, "Bearer ", "", 1)
 
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
 

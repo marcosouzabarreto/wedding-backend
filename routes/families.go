@@ -22,7 +22,7 @@ func SetupFamilyRoutes(r *gin.Engine, db *gorm.DB) {
 	familyProtected := r.Group("/families")
 	familyProtected.Use(middleware.AuthMiddleware())
 	{
-		familyPublic.GET("/", familyHandlers.GetAll)
+		familyProtected.GET("/", familyHandlers.GetAll)
 		familyProtected.POST("/", familyHandlers.Create)
 	}
 
