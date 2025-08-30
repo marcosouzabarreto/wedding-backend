@@ -15,13 +15,13 @@ func SetupGuestRoutes(r *gin.Engine, db *gorm.DB) {
 
 	guestPublic := r.Group("/guests")
 	{
-		guestPublic.GET("/", guestRoutes.GetAll)
 		guestPublic.GET("/:id", guestRoutes.GetByID)
 	}
 
 	guestProtected := r.Group("/guests")
 	guestProtected.Use(middleware.AuthMiddleware())
 	{
+		guestPublic.GET("/", guestRoutes.GetAll)
 		guestProtected.POST("/", guestRoutes.Create)
 	}
 }

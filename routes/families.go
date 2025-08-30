@@ -15,7 +15,6 @@ func SetupFamilyRoutes(r *gin.Engine, db *gorm.DB) {
 
 	familyPublic := r.Group("/families")
 	{
-		familyPublic.GET("/", familyHandlers.GetAll)
 		familyPublic.GET("/:id", familyHandlers.GetById)
 		familyPublic.GET("/token/:token", familyHandlers.GetByToken)
 	}
@@ -23,6 +22,7 @@ func SetupFamilyRoutes(r *gin.Engine, db *gorm.DB) {
 	familyProtected := r.Group("/families")
 	familyProtected.Use(middleware.AuthMiddleware())
 	{
+		familyPublic.GET("/", familyHandlers.GetAll)
 		familyProtected.POST("/", familyHandlers.Create)
 	}
 
