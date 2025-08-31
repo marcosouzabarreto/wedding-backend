@@ -52,3 +52,14 @@ func (s *GuestService) Update(id string, guestData *models.Guest) (*models.Guest
 
 	return &guest, nil
 }
+
+func (s *GuestService) Delete(id string) error {
+	var guest models.Guest
+	if err := s.db.First(&guest, id).Error; err != nil {
+		return err
+	}
+	if err := s.db.Delete(&guest).Error; err != nil {
+		return err
+	}
+	return nil
+}

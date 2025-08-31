@@ -24,5 +24,6 @@ func SetupGuestRoutes(r *gin.Engine, db *gorm.DB) {
 		guestProtected.GET("/", guestRoutes.GetAll)
 		guestProtected.POST("/", guestRoutes.Create)
 		guestProtected.PUT("/:id", guestRoutes.Update)
+		guestProtected.DELETE("/:id", guestRoutes.Delete)
 	}
 }

@@ -65,3 +65,12 @@ func (h *GuestHandlers) Update(c *gin.Context) {
 
 	c.JSON(http.StatusOK, updatedGuest)
 }
+
+func (h *GuestHandlers) Delete(c *gin.Context) {
+	id := c.Param("id")
+	if err := h.service.Delete(id); err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "guest not found"})
+		return
+	}
+	c.Status(http.StatusNoContent)
+}
