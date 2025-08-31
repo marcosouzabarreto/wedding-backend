@@ -93,9 +93,9 @@ func CreatePayment(db *gorm.DB) gin.HandlerFunc {
 				},
 			},
 			BackURLs: &preference.BackURLsRequest{
-				Success: "https://laviekinho.com/gift-payment-status",
-				Failure: "https://laviekinho.com/gift-payment-status",
-				Pending: "https://laviekinho.com/gift-payment-status",
+				Success: "https://laviekinho.com",
+				Failure: "https://laviekinho.com",
+				Pending: "https://laviekinho.com",
 			},
 		})
 
