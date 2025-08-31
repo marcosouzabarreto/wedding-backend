@@ -35,3 +35,20 @@ func (s *GuestService) GetByID(id string) (models.Guest, error) {
 	}
 	return guest, nil
 }
+
+func (s *GuestService) Update(id string, guestData *models.Guest) (*models.Guest, error) {
+	var guest models.Guest
+	if err := s.db.First(&guest, id).Error; err != nil {
+		return nil, err
+	}
+
+	if err := s.db.Model(&guest).Updates(guestData).Error; err != nil {
+		return nil, err
+	}
+
+	if err := s.db.Preload("Family").Preload("RSVP").First(&guest, id).Error; err != nil {
+		return nil, err
+	}
+
+	return &guest, nil
+}

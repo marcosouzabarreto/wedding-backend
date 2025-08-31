@@ -48,3 +48,20 @@ func (h *GuestHandlers) GetByID(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, guest)
 }
+
+func (h *GuestHandlers) Update(c *gin.Context) {
+	id := c.Param("id")
+	var guest models.Guest
+	if err := c.ShouldBindJSON(&guest); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request: " + err.Error()})
+		return
+	}
+
+	updatedGuest, err := h.service.Update(id, &guest)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, updatedGuest)
+}
